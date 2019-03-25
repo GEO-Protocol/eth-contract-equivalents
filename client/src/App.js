@@ -54,6 +54,8 @@ class App extends Component {
             );
 
             this.setState({web3, accounts, contract: instance}, this.update);
+
+            instance.events.allEvents({fromBlock: "latest"}).on("data", this.update);
         } catch (error) {
             // Catch any errors for any of the above operations.
             alert(
