@@ -131,10 +131,10 @@ class App extends Component {
                 <div className="PanelBlock">
                     <div>New record:</div>
                     <div className="PanelRow">
-                        <h5>Name:</h5>
-                        <input className="InputTextElement" type="text" id="newName"/>
                         <h5>Description:</h5>
                         <input className="InputTextElement" type="text" id="newDescription"/>
+                        <h5>Name:</h5>
+                        <input className="InputTextElement" type="text" id="newName"/>
                         <button className="PrimaryButton"
                                 onClick={async () => {
                                     await this.addRecord(
@@ -152,18 +152,16 @@ class App extends Component {
                     <div>Edit record:</div>
                     <div className="PanelRow">
                         <h5>Index:</h5>
-
                         <Dropdown id="SelectedIndex"
                                   className="ComboBoxElement"
                                   options={indexes}
                                   placeholder={!!this.state.selectedIndex ? this.state.selectedIndex : "0"}
                                   onChange={this.selectIndex}
                         />
-
-                        <h5>Name:</h5>
-                        <input className="InputTextElement" type="text" id="changedName"/>
                         <h5>Description:</h5>
                         <input className="InputTextElement" type="text" id="changedDescription"/>
+                        <h5>Name:</h5>
+                        <input className="InputTextElement" type="text" id="changedName"/>
                         <button className="PrimaryButton"
                                 onClick={async () => {
                                     await this.editRecord(
