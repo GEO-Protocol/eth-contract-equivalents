@@ -17,6 +17,7 @@ const columns = [
     {
         Header: "Index",
         accessor: 'index',
+        width: 70,
     },
     {
         Header: "Description",
@@ -73,21 +74,21 @@ class App extends Component {
         data = [];
 
         const tasks = range(countRecords).map(async (e) => {
-                const response = await contract.methods.getRecord(e).call();
+            const response = await contract.methods.getRecord(e).call();
 
-                data.push({
-                    index: e,
-                    address: response["0"],
-                    name: response["1"],
-                    description: response["2"],
-                });
+            data.push({
+                index: e,
+                address: response["0"],
+                name: response["1"],
+                description: response["2"],
+            });
         });
 
         await Promise.all(tasks);
 
         data = sortBy(data, ["index"]);
 
-        indexes = filter(data, ["address", accounts[0]]).map((e)=>e.index);
+        indexes = filter(data, ["address", accounts[0]]).map((e) => e.index);
 
         this.forceUpdate();
     };

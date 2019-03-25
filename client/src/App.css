@@ -110,3 +110,7 @@
 hr.style1{
     border-top: 1px solid #8c8b8b;
 }
+
+.TableIndexColumn{
+    width: 50px;
+}
