@@ -7,7 +7,7 @@ import 'react-dropdown/style.css'
 import ReactTable from 'react-table'
 import "react-table/react-table.css";
 import logo from './logo.svg';
-import {range, forEach} from "lodash"
+import {range, forEach, filter} from "lodash"
 
 let data = [];
 
@@ -108,7 +108,9 @@ class App extends Component {
     selectIndex = (arg) => {
         this.setState({
             selectedIndex: arg.value
-        })
+        });
+        document.getElementById('changedName').value = filter(data, {"index": arg.value})[0].name;
+        document.getElementById('changedDescription').value = filter(data, {"index": arg.value})[0].description;
     };
 
     render() {
@@ -153,7 +155,7 @@ class App extends Component {
                         <Dropdown id="SelectedIndex"
                                   className="ComboBoxElement"
                                   options={indexes}
-                                  placeholder="Select an option"
+                                  placeholder={!!this.state.selectedIndex ? this.state.selectedIndex : "0"}
                                   onChange={this.selectIndex}
                         />
 
