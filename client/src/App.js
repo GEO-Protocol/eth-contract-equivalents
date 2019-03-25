@@ -7,7 +7,7 @@ import 'react-dropdown/style.css'
 import ReactTable from 'react-table'
 import "react-table/react-table.css";
 import logo from './logo.svg';
-import {range, forEach, filter, sortBy} from "lodash"
+import {range, forEach, filter, sortBy, size} from "lodash"
 
 let data = [];
 
@@ -180,6 +180,10 @@ class App extends Component {
                         data={data}
                         columns={columns}
                         className="-striped -highlight"
+                        showPagination={false}
+                        showPaginationBottom={false}
+                        pageSize={size(data)}
+                        showPageJump={false}
                     />
                 </div>
             </div>
