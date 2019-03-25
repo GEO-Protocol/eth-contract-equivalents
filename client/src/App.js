@@ -7,7 +7,7 @@ import 'react-dropdown/style.css'
 import ReactTable from 'react-table'
 import "react-table/react-table.css";
 import logo from './logo.svg';
-import {range, forEach, filter} from "lodash"
+import {range, forEach, filter, sortBy} from "lodash"
 
 let data = [];
 
@@ -66,30 +66,30 @@ class App extends Component {
     };
 
     update = async () => {
-        const {contract} = this.state;
+        const {accounts, contract} = this.state;
 
         const countRecords = (await contract.methods.countRecords().call());
 
         data = [];
 
-        indexes = range(countRecords);
+        const tasks = range(countRecords).map(async (e) => {
+                const response = await contract.methods.getRecord(e).call();
 
-        forEach(range(countRecords), async (e) => {
-            const response = await contract.methods.getRecord(e).call();
-
-            console.log("response", response);
-
-            data.push({
-                index: e,
-                address: response["0"],
-                name: response["1"],
-                description: response["2"],
-            });
-
-            setTimeout(() => {
-                this.forceUpdate()
-            }, 1000);
+                data.push({
+                    index: e,
+                    address: response["0"],
+                    name: response["1"],
+                    description: response["2"],
+                });
         });
+
+        await Promise.all(tasks);
+
+        data = sortBy(data, ["index"]);
+
+        indexes = filter(data, ["address", accounts[0]]).map((e)=>e.index);
+
+        this.forceUpdate();
     };
 
     addRecord = async (name, description) => {
@@ -140,7 +140,7 @@ class App extends Component {
                                         document.getElementById('newName').value,
                                         document.getElementById('newDescription').value)
                                 }}>
-                            <text>ADD</text>
+                            <span>ADD</span>
                         </button>
                     </div>
                 </div>
@@ -170,7 +170,7 @@ class App extends Component {
                                         document.getElementById('changedName').value,
                                         document.getElementById('changedDescription').value)
                                 }}>
-                            <text>EDIT</text>
+                            <span>EDIT</span>
                         </button>
                     </div>
                 </div>
