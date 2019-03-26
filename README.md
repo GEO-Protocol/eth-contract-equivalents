@@ -10,3 +10,8 @@
     copy ./build/contracts/ to ./client/build/contracts/
     
    see  [Launch client README.md](client/README.md)
+   
+#Docker:
+    docker-compose up
+    
+   
