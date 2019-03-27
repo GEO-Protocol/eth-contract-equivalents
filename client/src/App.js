@@ -132,9 +132,60 @@ class App extends Component {
     };
 
     render() {
+        const {accounts} = this.state;
         if (!this.state.web3) {
             return <div>Loading Web3, accounts, and contract...</div>;
         }
+
+        const editBlock = (!!accounts && accounts.length) ? (<div>
+            <hr className="style1"/>
+
+            <div className="PanelBlock">
+                <div>New record:</div>
+                <div className="PanelRow">
+                    <h5>Description:</h5>
+                    <input className="InputTextElement" type="text" id="newDescription"/>
+                    <h5>Name:</h5>
+                    <input className="InputTextElement" type="text" id="newName"/>
+                    <button className="PrimaryButton"
+                            onClick={async () => {
+                                await this.addRecord(
+                                    document.getElementById('newName').value,
+                                    document.getElementById('newDescription').value)
+                            }}>
+                        <span>ADD</span>
+                    </button>
+                </div>
+            </div>
+
+            <hr className="style1"/>
+
+            <div className="PanelBlock">
+                <div>Edit record:</div>
+                <div className="PanelRow">
+                    <h5>Index:</h5>
+                    <Dropdown id="SelectedIndex"
+                              className="ComboBoxElement"
+                              options={indexes}
+                              placeholder={!!this.state.selectedIndex ? this.state.selectedIndex : "0"}
+                              onChange={this.selectIndex}
+                    />
+                    <h5>Description:</h5>
+                    <input className="InputTextElement" type="text" id="changedDescription"/>
+                    <h5>Name:</h5>
+                    <input className="InputTextElement" type="text" id="changedName"/>
+                    <button className="PrimaryButton"
+                            onClick={async () => {
+                                await this.editRecord(
+                                    this.state.selectedIndex,
+                                    document.getElementById('changedName').value,
+                                    document.getElementById('changedDescription').value)
+                            }}>
+                        <span>EDIT</span>
+                    </button>
+                </div>
+            </div>
+        </div>) : (<div/>);
 
         return (
             <div className="App">
@@ -143,53 +194,7 @@ class App extends Component {
                     <h1 className="HeaderTitle">Equivalents registry</h1>
                 </div>
 
-                <hr className="style1"/>
-
-                <div className="PanelBlock">
-                    <div>New record:</div>
-                    <div className="PanelRow">
-                        <h5>Description:</h5>
-                        <input className="InputTextElement" type="text" id="newDescription"/>
-                        <h5>Name:</h5>
-                        <input className="InputTextElement" type="text" id="newName"/>
-                        <button className="PrimaryButton"
-                                onClick={async () => {
-                                    await this.addRecord(
-                                        document.getElementById('newName').value,
-                                        document.getElementById('newDescription').value)
-                                }}>
-                            <span>ADD</span>
-                        </button>
-                    </div>
-                </div>
-
-                <hr className="style1"/>
-
-                <div className="PanelBlock">
-                    <div>Edit record:</div>
-                    <div className="PanelRow">
-                        <h5>Index:</h5>
-                        <Dropdown id="SelectedIndex"
-                                  className="ComboBoxElement"
-                                  options={indexes}
-                                  placeholder={!!this.state.selectedIndex ? this.state.selectedIndex : "0"}
-                                  onChange={this.selectIndex}
-                        />
-                        <h5>Description:</h5>
-                        <input className="InputTextElement" type="text" id="changedDescription"/>
-                        <h5>Name:</h5>
-                        <input className="InputTextElement" type="text" id="changedName"/>
-                        <button className="PrimaryButton"
-                                onClick={async () => {
-                                    await this.editRecord(
-                                        this.state.selectedIndex,
-                                        document.getElementById('changedName').value,
-                                        document.getElementById('changedDescription').value)
-                                }}>
-                            <span>EDIT</span>
-                        </button>
-                    </div>
-                </div>
+                {editBlock}
 
                 <div className="EquivalentsListContainer">
                     <ReactTable
