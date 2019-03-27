@@ -34,24 +34,14 @@ class App extends Component {
     state = {
         storageValue: 0,
         web3: null,
-        web3View: null,
         accounts: null,
         contract: null,
-        contractView: null,
         selectedIndex: null,
     };
 
     componentDidMount = async () => {
         try {
-            const web3View = await getViewWeb3().catch((e)=>{
-                console.error(e);
-                return null;
-            });
-            const web3 = await getWeb3().catch((e)=>{
-                console.error(e);
-                return null;
-            });
-            console.log("web3View",web3View);
+            const web3 = await getWeb3();
 
             // Use web3 to get the user's accounts.
             const accounts = await web3.eth.getAccounts();
@@ -63,12 +53,7 @@ class App extends Component {
                 Equivalents.abi,
                 deployedNetwork && deployedNetwork.address,
             );
-            const contractView = new web3View.eth.Contract(
-                Equivalents.abi,
-                deployedNetwork && deployedNetwork.address,
-            );
-
-            this.setState({web3, web3View, accounts, contract: instance, contractView}, this.update);
+            this.setState({web3, accounts, contract: instance}, this.update);
 
             instance.events.allEvents({fromBlock: "latest"}).on("data", this.update);
         } catch (error) {
@@ -81,14 +66,14 @@ class App extends Component {
     };
 
     update = async () => {
-        const {accounts, contractView} = this.state;
+        const {accounts, contract} = this.state;
 
-        const countRecords = (await contractView.methods.countRecords().call());
+        const countRecords = (await contract.methods.countRecords().call());
 
         data = [];
 
         const tasks = range(countRecords).map(async (e) => {
-            const response = await contractView.methods.getRecord(e).call();
+            const response = await contract.methods.getRecord(e).call();
 
             data.push({
                 index: e,
@@ -133,7 +118,7 @@ class App extends Component {
     };
 
     render() {
-        if (!this.state.web3View) {
+        if (!this.state.web3) {
             return <div>Loading Web3, accounts, and contract...</div>;
         }
 
