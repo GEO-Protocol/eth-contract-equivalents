@@ -8,7 +8,6 @@ import ReactTable from 'react-table'
 import "react-table/react-table.css";
 import logo from './logo.svg';
 import {range, forEach, filter, sortBy, size} from "lodash"
-import getViewWeb3 from "./utils/getViewWeb3";
 
 let data = [];
 
@@ -42,9 +41,11 @@ class App extends Component {
     componentDidMount = async () => {
         try {
             const web3 = await getWeb3();
-
             // Use web3 to get the user's accounts.
-            const accounts = await web3.eth.getAccounts();
+            const accounts = await web3.eth.getAccounts().catch(() => {
+                return [];
+            });
+            console.log("accounts", accounts);
             // Get the contract instance.
             const networkId = await web3.eth.net.getId();
             const deployedNetwork = Equivalents.networks[networkId];
@@ -57,11 +58,10 @@ class App extends Component {
 
             instance.events.allEvents({fromBlock: "latest"}).on("data", this.update);
         } catch (error) {
-            // Catch any errors for any of the above operations.
+            console.error(error);
             alert(
                 `Failed to load web3, accounts, or contract. Check console for details.`,
             );
-            console.error(error);
         }
     };
 
@@ -87,7 +87,7 @@ class App extends Component {
 
         data = sortBy(data, ["index"]);
 
-        if(!!accounts && accounts.length){
+        if (!!accounts && accounts.length) {
             indexes = filter(data, ["address", accounts[0]]).map((e) => e.index);
         } else {
             indexes = [];
@@ -99,12 +99,26 @@ class App extends Component {
     addRecord = async (name, description) => {
         const {accounts, contract} = this.state;
 
+        if (!accounts || accounts.length == 0) {
+            alert(
+                "Failed to get account. Required provider, like Mist/MetaMask's",
+            );
+            return;
+        }
+
         await contract.methods.add(name, description).send({from: accounts[0]});
     };
 
     editRecord = async (index, name, description) => {
         console.log("index", index);
         const {accounts, contract} = this.state;
+
+        if (!accounts || accounts.length == 0) {
+            alert(
+                "Failed to get account. Required provider, like Mist/MetaMask's",
+            );
+            return;
+        }
 
         await contract.methods.edit(index, name, description).send({from: accounts[0]});
     };
