@@ -8,6 +8,7 @@ import ReactTable from 'react-table'
 import "react-table/react-table.css";
 import logo from './logo.svg';
 import {range, forEach, filter, sortBy, size} from "lodash"
+import getViewWeb3 from "./utils/getViewWeb3";
 
 let data = [];
 
@@ -33,15 +34,24 @@ class App extends Component {
     state = {
         storageValue: 0,
         web3: null,
+        web3View: null,
         accounts: null,
         contract: null,
+        contractView: null,
         selectedIndex: null,
     };
 
     componentDidMount = async () => {
         try {
-            // Get network provider and web3 instance.
-            const web3 = await getWeb3();
+            const web3View = await getViewWeb3().catch((e)=>{
+                console.error(e);
+                return null;
+            });
+            const web3 = await getWeb3().catch((e)=>{
+                console.error(e);
+                return null;
+            });
+            console.log("web3View",web3View);
 
             // Use web3 to get the user's accounts.
             const accounts = await web3.eth.getAccounts();
@@ -53,8 +63,12 @@ class App extends Component {
                 Equivalents.abi,
                 deployedNetwork && deployedNetwork.address,
             );
+            const contractView = new web3View.eth.Contract(
+                Equivalents.abi,
+                deployedNetwork && deployedNetwork.address,
+            );
 
-            this.setState({web3, accounts, contract: instance}, this.update);
+            this.setState({web3, web3View, accounts, contract: instance, contractView}, this.update);
 
             instance.events.allEvents({fromBlock: "latest"}).on("data", this.update);
         } catch (error) {
@@ -67,14 +81,14 @@ class App extends Component {
     };
 
     update = async () => {
-        const {accounts, contract} = this.state;
+        const {accounts, contractView} = this.state;
 
-        const countRecords = (await contract.methods.countRecords().call());
+        const countRecords = (await contractView.methods.countRecords().call());
 
         data = [];
 
         const tasks = range(countRecords).map(async (e) => {
-            const response = await contract.methods.getRecord(e).call();
+            const response = await contractView.methods.getRecord(e).call();
 
             data.push({
                 index: e,
@@ -88,7 +102,11 @@ class App extends Component {
 
         data = sortBy(data, ["index"]);
 
-        indexes = filter(data, ["address", accounts[0]]).map((e) => e.index);
+        if(!!accounts && accounts.length){
+            indexes = filter(data, ["address", accounts[0]]).map((e) => e.index);
+        } else {
+            indexes = [];
+        }
 
         this.forceUpdate();
     };
@@ -115,7 +133,7 @@ class App extends Component {
     };
 
     render() {
-        if (!this.state.web3) {
+        if (!this.state.web3View) {
             return <div>Loading Web3, accounts, and contract...</div>;
         }
 
