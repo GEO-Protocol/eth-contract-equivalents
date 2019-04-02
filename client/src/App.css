@@ -1,0 +1,116 @@
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    animation: App-logo-spin infinite 20s linear;
+    height: 40vmin;
+}
+
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.PanelBlock {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin-left: 20px;
+}
+
+.PanelRow {
+    display: flex;
+    flex-direction: row;
+    margin-left: 30px;
+    margin-right: 30px;
+    align-items: center;
+}
+
+.InputTextElement {
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 25px;
+    width: 300px;
+
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: black;
+}
+
+.ComboBoxElement {
+    margin-left: 10px;
+    margin-right: 10px;
+
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: black;
+}
+
+.PrimaryButton {
+    background-color: #fce903;
+    color: black;
+    height: 30px;
+    width: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 3px;
+    border-width: 0px;
+    border-color: black;
+}
+
+.EquivalentsListContainer{
+    align-self: center;
+    width: 100%;
+}
+
+.PageHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+
+.Logo{
+    width: 75px;
+    height: 75px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.HeaderTitle{
+    flex-grow: 10;
+    padding-right: 175px;
+}
+
+
+hr.style1{
+    border-top: 1px solid #8c8b8b;
+}
+
+.TableIndexColumn{
+    width: 50px;
+}
